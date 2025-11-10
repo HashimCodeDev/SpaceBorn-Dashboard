@@ -29,7 +29,7 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-[#000]">
+    <div className="min-h-screen flex items-center justify-center p-4 bg-black">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-semibold text-white mb-2">Welcome Back</h1>
@@ -46,7 +46,7 @@ export default function Login() {
                 placeholder="admin@company.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-3 py-2 bg-[#000] text-white border border-[#222] rounded focus:border-white outline-none transition-all"
+                className="w-full px-3 py-2 bg-black text-white border border-[#222] rounded focus:border-white outline-none transition-all"
                 required
               />
             </div>
@@ -59,7 +59,7 @@ export default function Login() {
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-3 py-2 bg-[#000] text-white border border-[#222] rounded focus:border-white outline-none transition-all"
+                className="w-full px-3 py-2 bg-black text-white border border-[#222] rounded focus:border-white outline-none transition-all"
                 required
               />
             </div>
