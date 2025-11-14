@@ -2,7 +2,7 @@ import { requireRole } from '@/lib/dal';
 import { listTeams } from '@/lib/api/teams';
 import { listUsers } from '@/lib/api/users';
 
-import TeamsClient from '@/components/TeamsClient';
+import TeamsClient from '@/components/Teams';
 
 export default async function TeamsPage() {
   // Only allow admin and core roles
