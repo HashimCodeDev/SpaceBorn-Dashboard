@@ -93,15 +93,6 @@ export default function LoginForm() {
                             {isLoading ? 'Logging in...' : 'Login'}
                         </button>
                     </form>
-
-                    <div className="mt-6 pt-6 border-t border-[#222]">
-                        <p className="text-sm font-medium mb-2 text-white">Demo Accounts:</p>
-                        <div className="text-xs space-y-1 text-[#aaa]">
-                            <p>admin@company.com / admin123</p>
-                            <p>core@company.com / core123</p>
-                            <p>employee@company.com / emp123</p>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
