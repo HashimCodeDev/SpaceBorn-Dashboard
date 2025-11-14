@@ -57,7 +57,7 @@ const Sidebar = ({ user }: SidebarProps) => {
         { href: '/projects', label: 'Projects', icon: FolderKanban },
         { href: '/revenue', label: 'Revenue', icon: DollarSign },
         ...baseItems.slice(1),
-        { href: '/admin', label: 'Manage Users', icon: UserCog }, // Add this
+        { href: '/admin', label: 'User Management', icon: UserCog }, // Add this
       ];
     }
 
