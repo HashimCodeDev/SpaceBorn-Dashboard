@@ -1,18 +1,26 @@
 'use client';
-import { useAuth } from '../context/AuthContext';
+
 import { Bell } from 'lucide-react';
 
-const Header = ({ title }) => {
-  const { user } = useAuth();
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  role: 'admin' | 'core' | 'employee';
+}
 
-  if (!user) return null;
+interface HeaderProps {
+  title: string;
+  user: User;
+}
 
-  const getInitials = (name) => {
+const Header = ({ title, user }: HeaderProps) => {
+  const getInitials = (name: string) => {
     return name.split(' ').map(n => n[0]).join('').toUpperCase();
   };
 
   return (
-    <header className="bg-[#000] border-b border-[#222] px-6 py-4 sticky top-0 z-20">
+    <header className="bg-black border-b border-[#222] px-6 py-4 sticky top-0 z-20">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-semibold text-white">{title}</h1>
         <div className="flex items-center gap-4">
