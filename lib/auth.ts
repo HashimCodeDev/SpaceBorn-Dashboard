@@ -1,24 +1,45 @@
+'use server'
+
+import { cookies } from 'next/headers';
+
 const ACCESS = "accessToken";
 const REFRESH = "refreshToken";
-
 const BACKEND_URL = process.env.BACKEND_URL ?? "http://localhost:8000/api/v1";
 
-export function setTokens(access: string, refresh?: string) {
-    localStorage.setItem(ACCESS, access);
-    if (refresh) localStorage.setItem(REFRESH, refresh);
+export async function setTokens(access: string, refresh?: string) {
+    const cookieStore = await cookies();
+
+    cookieStore.set(ACCESS, access, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 60 * 60, // 1 hour
+    });
+
+    if (refresh) {
+        cookieStore.set(REFRESH, refresh, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax',
+            maxAge: 60 * 60 * 24 * 7, // 7 days
+        });
+    }
 }
 
-export function getAccessToken() {
-    return localStorage.getItem(ACCESS);
+export async function getAccessToken() {
+    const cookieStore = await cookies();
+    return cookieStore.get(ACCESS)?.value;
 }
 
-export function getRefreshToken() {
-    return localStorage.getItem(REFRESH);
+export async function getRefreshToken() {
+    const cookieStore = await cookies();
+    return cookieStore.get(REFRESH)?.value;
 }
 
-export function clearTokens() {
-    localStorage.removeItem(ACCESS);
-    localStorage.removeItem(REFRESH);
+export async function clearTokens() {
+    const cookieStore = await cookies();
+    cookieStore.delete(ACCESS);
+    cookieStore.delete(REFRESH);
 }
 
 export async function login(email: string, password: string) {
@@ -30,13 +51,15 @@ export async function login(email: string, password: string) {
 
     const data = await res.json();
 
-    if (data.access) setTokens(data.access, data.refresh);
+    if (data.access) {
+        await setTokens(data.access, data.refresh);
+    }
 
     return data;
 }
 
 export async function refreshAccessToken() {
-    const refresh = getRefreshToken();
+    const refresh = await getRefreshToken();
     if (!refresh) return null;
 
     const res = await fetch(`${BACKEND_URL}/auth/token/refresh/`, {
@@ -47,11 +70,13 @@ export async function refreshAccessToken() {
 
     const data = await res.json();
 
-    if (data.access) localStorage.setItem(ACCESS, data.access);
+    if (data.access) {
+        await setTokens(data.access);
+    }
 
     return data.access || null;
 }
 
-export function logout() {
-    clearTokens();
+export async function logout() {
+    await clearTokens();
 }

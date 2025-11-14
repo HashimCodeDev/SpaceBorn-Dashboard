@@ -1,16 +1,14 @@
-// app/page.tsx (server component)
-import { redirect } from 'next/navigation';
-import { getCurrentUser } from '@/lib/auth'; // server-side auth checker
+import { redirect } from "next/navigation";
+import { getAccessToken } from "@/lib/auth";
 
-export default async function Home() {
-  const user = await getCurrentUser(); // runs on server
+export default async function Page() {
+  const token = await getAccessToken();
 
-  if (user) {
-    redirect('/dashboard');
-  } else {
-    redirect('/login');
+  // If user is authenticated, redirect to dashboard
+  if (token) {
+    redirect("/dashboard");
   }
 
-  // this component never renders
-  return null;
+  // If not authenticated, redirect to login
+  redirect("/login");
 }
