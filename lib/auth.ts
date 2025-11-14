@@ -1,7 +1,7 @@
 const ACCESS = "accessToken";
 const REFRESH = "refreshToken";
 
-const BACKEND_URL = process.env.BACKEND_URL ? process.env.BACKEND_URL : "http://localhost:8000/api/v1";
+const BACKEND_URL = process.env.BACKEND_URL ?? "http://localhost:8000/api/v1";
 
 export function setTokens(access: string, refresh?: string) {
     localStorage.setItem(ACCESS, access);
@@ -22,7 +22,7 @@ export function clearTokens() {
 }
 
 export async function login(email: string, password: string) {
-    const res = await fetch("http://localhost:8000/api/v1/auth/token/", {
+    const res = await fetch(`${BACKEND_URL}/auth/token/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -39,7 +39,7 @@ export async function refreshAccessToken() {
     const refresh = getRefreshToken();
     if (!refresh) return null;
 
-    const res = await fetch("http://localhost:8000/api/v1/auth/token/refresh/", {
+    const res = await fetch(`${BACKEND_URL}/auth/token/refresh/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ refresh }),
