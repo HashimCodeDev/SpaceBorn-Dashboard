@@ -1,36 +1,57 @@
-export interface JWTPayload {
-    id: string;
-    email: string;
+const ACCESS = "accessToken";
+const REFRESH = "refreshToken";
+
+const BACKEND_URL = process.env.BACKEND_URL ? process.env.BACKEND_URL : "http://localhost:8000/api/v1";
+
+export function setTokens(access: string, refresh?: string) {
+    localStorage.setItem(ACCESS, access);
+    if (refresh) localStorage.setItem(REFRESH, refresh);
 }
 
-export async function login(email: string, password: string): Promise<boolean> {
-    const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+export function getAccessToken() {
+    return localStorage.getItem(ACCESS);
+}
+
+export function getRefreshToken() {
+    return localStorage.getItem(REFRESH);
+}
+
+export function clearTokens() {
+    localStorage.removeItem(ACCESS);
+    localStorage.removeItem(REFRESH);
+}
+
+export async function login(email: string, password: string) {
+    const res = await fetch("http://localhost:8000/api/v1/auth/token/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
-        credentials: 'include', // store HttpOnly cookie
     });
 
-    return res.ok;
+    const data = await res.json();
+
+    if (data.access) setTokens(data.access, data.refresh);
+
+    return data;
 }
 
-export async function getCurrentUser(): Promise<JWTPayload | null> {
-    const res = await fetch('/api/auth/me', {
-        method: 'GET',
-        credentials: 'include',
+export async function refreshAccessToken() {
+    const refresh = getRefreshToken();
+    if (!refresh) return null;
+
+    const res = await fetch("http://localhost:8000/api/v1/auth/token/refresh/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ refresh }),
     });
 
-    if (!res.ok) return null;
+    const data = await res.json();
 
-    const { user } = await res.json();
-    return user as JWTPayload;
+    if (data.access) localStorage.setItem(ACCESS, data.access);
+
+    return data.access || null;
 }
 
-export async function logout(): Promise<boolean> {
-    const res = await fetch('/api/auth/logout', {
-        method: 'POST',
-        credentials: 'include',
-    });
-
-    return res.ok;
+export function logout() {
+    clearTokens();
 }
